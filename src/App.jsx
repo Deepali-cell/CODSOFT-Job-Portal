@@ -31,11 +31,7 @@ const App = () => {
         },
         {
           path: "/jobs",
-          element: (
-            <ProtectedRoute>
-              <JobListPage />
-            </ProtectedRoute>
-          ),
+          element: <JobListPage />,
         },
         {
           path: "/job/:id",
