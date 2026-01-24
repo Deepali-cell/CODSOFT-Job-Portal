@@ -33,9 +33,9 @@ const JobListPage = () => {
     const query = e.target.elements["search-query"].value.trim();
     setsearchQuery(query);
   };
-  useEffect(() => {
-    if (isLoaded) joblistFn();
-  }, [isLoaded, location, searchQuery, company_id]);
+ useEffect(() => {
+  joblistFn();
+}, [location, searchQuery, company_id]);
 
   if (!isLoaded) {
     return (
