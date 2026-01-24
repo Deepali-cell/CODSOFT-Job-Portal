@@ -1,26 +1,29 @@
 import supabaseClient from "@/utils/supabase";
 
 export async function getJobList(token, { location, company_id, searchQuery }) {
-  const supabase = await supabaseClient(token);
-  let query = supabase
-    .from("jobs")
-    .select(
-      "* , company : companies(name , logo_url) , savedJob : saved_jobs(id)"
-    );
+  const supabase = supabaseClient(token);
 
-  if (location) {
-    query = query.eq("location", location);
+  let selectQuery = `
+    *,
+    company:companies(name, logo_url)
+  `;
+
+  if (token) {
+    selectQuery += `, savedJob:saved_jobs(id)`;
   }
-  if (company_id) {
-    query = query.eq("company_id", company_id);
-  }
-  if (searchQuery) {
-    query = query.ilike("title", `%${searchQuery}%`);
-  }
+
+  let query = supabase.from("jobs").select(selectQuery);
+
+  if (location) query = query.eq("location", location);
+  if (company_id) query = query.eq("company_id", company_id);
+  if (searchQuery) query = query.ilike("title", `%${searchQuery}%`);
+
   const { data, error } = await query;
+
   if (error) {
-    console.log("there is some error on fetching all jobs", error);
-    return null;
+    console.error("Job fetch error:", error);
+    return [];
   }
+
   return data;
 }
