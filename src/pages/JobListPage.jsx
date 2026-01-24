@@ -2,12 +2,9 @@ import { getCompaniesApi } from "@/api/getCompaniesApi";
 import { getJobList } from "@/api/getJobListApi";
 import JobListP from "@/components/JobListP";
 import useFetchHook from "@/hooks/useFetchHook";
-import { useUser } from "@clerk/clerk-react";
-import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const JobListPage = () => {
-  const { isLoaded } = useUser();
   const [location, setLocation] = useState("");
   const [searchQuery, setsearchQuery] = useState("");
   const [company_id, setcompany_id] = useState("");
@@ -22,28 +19,18 @@ const JobListPage = () => {
 
   // get company
   const { fn: getcompanyfn, data: companies } = useFetchHook(getCompaniesApi);
-
   useEffect(() => {
-    if (isLoaded) getcompanyfn();
-  }, [isLoaded]);
+    getcompanyfn();
+  }, []);
 
-  
   const handleSearch = (e) => {
     e.preventDefault();
     const query = e.target.elements["search-query"].value.trim();
     setsearchQuery(query);
   };
- useEffect(() => {
-  joblistFn();
-}, [location, searchQuery, company_id]);
-
-  if (!isLoaded) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="w-10 h-10 animate-spin text-gray-600" />
-      </div>
-    );
-  }
+  useEffect(() => {
+    joblistFn();
+  }, [location, searchQuery, company_id]);
 
   return (
     <JobListP
